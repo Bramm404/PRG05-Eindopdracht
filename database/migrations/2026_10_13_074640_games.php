@@ -15,9 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->string('image');
-            $table->foreignId('developer_id')->constrained('developers');
-            $table->foreignId('user_id')->constrained('users');
+            $table->string('image')->nullable();
         });
     }
 
