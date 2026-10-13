@@ -12,4 +12,9 @@ class GameController extends Controller
         $games = Game::all();
         return view('games', compact('games'));
     }
+
+    public function show($id) {
+        $game = Game::findOrFail($id);
+        return view('game', compact('game'));
+    }
 }
