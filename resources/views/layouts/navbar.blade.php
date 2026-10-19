@@ -1,4 +1,4 @@
-<nav style="display: flex; flex-direction: row; justify-content: space-between">
+<nav class="mt-0 " style="display: flex; flex-direction: row; justify-content: space-between ; border: 1px solid black;">
     <div class="leftbar" style="display: flex;">
         <div class="image">
             <img src="#">
