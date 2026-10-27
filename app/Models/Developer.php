@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Developer extends Model
 {
-    public mixed $name;
+    public $timestamps = false;
+
     protected $fillable = ['name'];
 }

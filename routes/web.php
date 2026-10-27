@@ -16,10 +16,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/games/create', [GameController::class, 'create'])->name('game.create');
+    Route::post('/games', [GameController::class, 'store'])->name('game.store');
 });
 
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
-Route::get('/games/create', [GameController::class, 'create'])->name('games.create');
-Route::post('/games', [GameController::class, 'store'])->name('games.store');
+Route::get('/games/{id}', [GameController::class, 'show'])->name('games.show');
 
 require __DIR__.'/auth.php';

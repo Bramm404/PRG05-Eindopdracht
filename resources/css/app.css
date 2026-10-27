@@ -5,3 +5,24 @@
 body {
     margin: 0;
 }
+
+@layer components {
+    .site-navbar {
+        min-height: 4.5rem;
+    }
+
+    .navbar-link {
+        color: #475569;
+        transition: background-color 150ms ease, color 150ms ease;
+    }
+
+    .navbar-link:hover {
+        background-color: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .logo-slot,
+    .profile-slot {
+        border: 1px solid #e2e8f0;
+    }
+}

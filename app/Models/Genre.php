@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Genre extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = ['name'];
 
     public function games(): BelongsToMany {

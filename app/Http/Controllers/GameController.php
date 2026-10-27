@@ -4,55 +4,61 @@ namespace App\Http\Controllers;
 
 use App\Models\Game;
 use App\Models\Developer;
+use App\Models\Genre;
 use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
-    public function index() {
-
+    public function index()
+    {
         $games = Game::all();
+
         return view('games', compact('games'));
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $game = Game::findOrFail($id);
         $developer = Developer::findOrFail($game->developer_id);
+
         return view('game', compact('game', 'developer'));
     }
 
-    public function create() {
+    public function create()
+    {
         return view('create');
     }
 
-    public function store(Request $request) {
-
-        $request -> validate([
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string'
-//            'developer' => 'required|string|max:255',
-//            'genre' => 'required|string|max:255',
+            'description' => 'required|string',
+            'developer' => 'required|string|max:255',
+            'genres' => 'required|string|max:255',
+            'image' => 'nullable|url|max:255',
         ]);
 
-//        if (Str::contains($request->genre, ',')) {
-//            $genres = array_map('trim', explode(', ', $request->genre))
-//        }
-
-        $game = new Game();
         $developer = new Developer();
-        $game->name = $request->name;
-        $game->description = $request->description;
-        $developer->name = $request->developer;
-
+        $developer->name = $validated['developer'];
         $developer->save();
 
-        foreach($genres as $genre) {
-            $genre->name = $request->genre;
-            $game->genres()->save($genre);
-            $genre->save();
-        }
-
+        $game = new Game();
+        $game->name = $validated['name'];
+        $game->description = $validated['description'];
+        $game->image = $validated['image'] ?? null;
         $game->user_id = auth()->id();
+        $game->developer_id = $developer->id;
+        $game->save();
+
+        $genreIds = collect(explode(',', $validated['genres']))
+            ->map(fn (string $name) => trim($name))
+            ->filter()
+            ->map(fn (string $name) => Genre::firstOrCreate(['name' => $name])->id)
+            ->all();
+
+        $game->genres()->sync($genreIds);
+
+        return redirect()->route('games.index');
     }
-
-
 }
