@@ -33,13 +33,25 @@ class GameController extends Controller
 //            'genre' => 'required|string|max:255',
         ]);
 
+//        if (Str::contains($request->genre, ',')) {
+//            $genres = array_map('trim', explode(', ', $request->genre))
+//        }
+
         $game = new Game();
         $developer = new Developer();
-//        $genre = new Genre();
         $game->name = $request->name;
         $game->description = $request->description;
         $developer->name = $request->developer;
-        //...
+
+        $developer->save();
+
+        foreach($genres as $genre) {
+            $genre->name = $request->genre;
+            $game->genres()->save($genre);
+            $genre->save();
+        }
+
+        $game->user_id = auth()->id();
     }
 
 
