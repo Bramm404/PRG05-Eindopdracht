@@ -17,9 +17,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/games/create', [GameController::class, 'create'])->name('game.create');
-    Route::post('/games', [GameController::class, 'store'])->name('game.store');
+    Route::post('/games', [GameController::class, 'store'])->name('games.store');
 });
-
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 Route::get('/games/{id}', [GameController::class, 'show'])->name('games.show');
 
