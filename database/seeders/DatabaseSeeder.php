@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Genre;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,11 +15,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $genres = [
+            'Adventure',
+            'Action',
+            'Soulslike',
+            'Multiplayer',
+            'Co-op',
+            'RPG',
+            'Strategy',
+            'Simulation',
+            'Sports',
+            'Horror',
+            'Platformer',
+            'Racing',
+            'Battle Royale',
+            'Puzzle',
+            'Survival',
+            'Singleplayer',
+            'First Person Shooter',
+            'Third Person Shooter'
+        ];
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        foreach ($genres as $genre) {
+            Genre::updateOrCreate(['name' => $genre]);
+        }
     }
 }

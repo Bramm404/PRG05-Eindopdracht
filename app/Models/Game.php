@@ -9,6 +9,7 @@ class Game extends Model
 {
     public $timestamps = false;
 
+
     protected $fillable = ['name', 'description', 'image', 'developer_id', 'user_id'];
 
     public function genres(): BelongsToMany {

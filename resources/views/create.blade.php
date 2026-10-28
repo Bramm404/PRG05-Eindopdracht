@@ -44,7 +44,7 @@
 
         <div>
             <label for="genres">Genres</label>
-            <input
+            <
                 id="genres"
                 type="text"
                 name="genres"

@@ -12,6 +12,11 @@ class Genre extends Model
 
     protected $fillable = ['name'];
 
+    public static function updateOrCreate(array $array)
+    {
+        return static::firstOrNew(['name' => $array['name']], $array)->save();
+    }
+
     public function games(): BelongsToMany {
         return $this->belongsToMany(Game::class, 'genres_games', 'genre_id', 'game_id');
     }
