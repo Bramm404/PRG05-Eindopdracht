@@ -28,49 +28,59 @@
     <div class="flex min-w-0 flex-1 flex-row items-center justify-end gap-3">
 
         <div class="flex min-w-0 flex-1 flex-row items-center justify-end gap-3">
-            <x-dropdown align="right" width="48">
-                <x-slot name="trigger">
-                    <button
-                        type="button"
-                        class="navbar-link inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium"
-                    >
-                        <span>Profile</span>
-
-                        <svg
-                            class="h-4 w-4 fill-current"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
+            @auth
+                <x-dropdown align="right" width="48">
+                    <x-slot name="trigger">
+                        <button
+                            type="button"
+                            class="navbar-link inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium"
                         >
-                            <path
-                                fill-rule="evenodd"
-                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                clip-rule="evenodd"
-                            />
-                        </svg>
-                    </button>
-                </x-slot>
+                            <span>Profile</span>
 
-                <x-slot name="content">
-                    <x-dropdown-link :href="route('profile.edit')">
-                        Profile
-                    </x-dropdown-link>
+                            <svg
+                                class="h-4 w-4 fill-current"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                    clip-rule="evenodd"
+                                />
+                            </svg>
+                        </button>
+                    </x-slot>
 
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-
-                        <x-dropdown-link
-                            :href="route('logout')"
-                            onclick="event.preventDefault(); this.closest('form').submit();"
-                        >
-                            Log out
+                    <x-slot name="content">
+                        <x-dropdown-link :href="route('profile.edit')">
+                            Profile
                         </x-dropdown-link>
-                    </form>
-                </x-slot>
-            </x-dropdown>
 
-            <div class="profile-slot flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-200">
-                <img src="#" alt="Profile avatar" class="h-full w-full object-cover">
-            </div>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+
+                            <x-dropdown-link
+                                :href="route('logout')"
+                                onclick="event.preventDefault(); this.closest('form').submit();"
+                            >
+                                Log out
+                            </x-dropdown-link>
+                        </form>
+                    </x-slot>
+                </x-dropdown>
+
+                <div class="profile-slot flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-slate-200">
+                    @if(auth()->user()->avatar)
+                        <img src="{{ asset('storage/'.auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" class="h-full w-full object-cover">
+                    @else
+                        <span class="font-semibold text-slate-600">{{ str(auth()->user()->name)->substr(0, 1)->upper() }}</span>
+                    @endif
+                </div>
+            @else
+                <a href="{{ route('login') }}" class="navbar-link rounded-md px-3 py-2 text-sm font-medium">
+                    Log in
+                </a>
+            @endauth
         </div>
 
     </div>

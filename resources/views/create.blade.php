@@ -1,75 +1,10 @@
-<x-layout title="Add a Game">
-    <form method="POST" action="{{ route('games.store') }}">
-        @csrf
-
-        <div>
-            <label for="name">Game name</label>
-            <input
-                id="name"
-                type="text"
-                name="name"
-                value="{{ old('name') }}"
-                required
-            >
-            @error('name')
-            <p>{{ $message }}</p>
-            @enderror
-        </div>
-
-        <div>
-            <label for="description">Description</label>
-            <textarea
-                id="description"
-                name="description"
-                required
-            >{{ old('description') }}</textarea>
-            @error('description')
-            <p>{{ $message }}</p>
-            @enderror
-        </div>
-
-        <div>
-            <label for="developer">Developer</label>
-            <input
-                id="developer"
-                type="text"
-                name="developer"
-                value="{{ old('developer') }}"
-                required
-            >
-            @error('developer')
-            <p>{{ $message }}</p>
-            @enderror
-        </div>
-
-        <div>
-            <label for="genres">Genres</label>
-            <
-                id="genres"
-                type="text"
-                name="genres"
-                value="{{ old('genres') }}"
-                placeholder="Action, Adventure, RPG"
-                required
-            >
-            @error('genres')
-            <p>{{ $message }}</p>
-            @enderror
-        </div>
-
-        <div>
-            <label for="image">Image URL</label>
-            <input
-                id="image"
-                type="url"
-                name="image"
-                value="{{ old('image') }}"
-            >
-            @error('image')
-            <p>{{ $message }}</p>
-            @enderror
-        </div>
-
-        <button type="submit">Add game</button>
-    </form>
+<x-layout title="Add a game">
+    <div class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+        <h1 class="mb-6 text-3xl font-bold text-slate-900">Add a game</h1>
+        <p class="mb-6 rounded-lg bg-indigo-50 p-4 text-indigo-800">You need at least three comments before you can post. Admins can post immediately.</p>
+        <form method="POST" action="{{ route('games.store') }}" enctype="multipart/form-data" class="flex flex-col gap-5 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">@csrf
+            @include('games._form')
+            <button class="self-start rounded-lg bg-indigo-600 px-5 py-2 font-semibold text-white hover:bg-indigo-700">Publish game</button>
+        </form>
+    </div>
 </x-layout>
