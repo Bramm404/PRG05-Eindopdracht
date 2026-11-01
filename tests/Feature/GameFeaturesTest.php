@@ -6,20 +6,24 @@ use App\Models\Game;
 use App\Models\Genre;
 use App\Models\User;
 
-test('games can be searched by name and developer and filtered by genre', function () {
+test('games can be searched by name, developer, or genre and filtered by multiple genres', function () {
     $genre = Genre::create(['name' => 'RPG']);
+    $secondGenre = Genre::create(['name' => 'Soulslike']);
     $game = Game::factory()->create(['name' => 'Moon Quest', 'developer_id' => Developer::create(['name' => 'Moon Studio'])->id]);
-    $game->genres()->attach($genre);
+    $game->genres()->attach([$genre->id, $secondGenre->id]);
     Game::factory()->create(['name' => 'Racing World']);
 
     $this->get(route('games.index', ['search' => 'Moon']))
         ->assertOk()
         ->assertSee('Moon Quest')
         ->assertDontSee('Racing World');
-    $this->get(route('games.index', ['genre' => $genre->id]))
+    $this->get(route('games.index', ['genres' => [$genre->id, $secondGenre->id]]))
         ->assertOk()
         ->assertSee('Moon Quest')
         ->assertDontSee('Racing World');
+    $this->get(route('games.index', ['search' => 'Soulslike']))
+        ->assertOk()
+        ->assertSee('Moon Quest');
 });
 
 test('users need three comments before creating a game', function () {
@@ -31,7 +35,10 @@ test('users need three comments before creating a game', function () {
         'description' => 'Description',
         'developer' => 'Studio',
         'genres' => [$genre->name],
-    ])->assertForbidden();
+    ])->assertRedirect(route('games.index'));
+
+    $this->actingAs($user)->get(route('games.create'))
+        ->assertRedirect(route('games.index'));
 
     Comment::factory()->count(3)->create(['user_id' => $user->id]);
     $response = $this->actingAs($user)->post(route('games.store'), [
@@ -54,7 +61,7 @@ test('dashboard shows favorites and authored comments', function () {
     $this->actingAs($user)->get(route('dashboard'))
         ->assertOk()
         ->assertSee($game->name)
-        ->assertSee('Your comments');
+        ->assertSee('Jouw reacties');
 });
 
 test('admins can remove games owned by another user', function () {
@@ -78,4 +85,20 @@ test('comment authors can edit and delete their comments', function () {
     $this->actingAs($user)->delete(route('comments.destroy', $comment))
         ->assertRedirect();
     expect(Comment::find($comment->id))->toBeNull();
+});
+
+test('game subpages provide a link back to the games index', function () {
+    $user = User::factory()->create();
+    Comment::factory()->count(3)->create(['user_id' => $user->id]);
+    $game = Game::factory()->create(['user_id' => $user->id]);
+
+    $this->get(route('games.show', $game))
+        ->assertOk()
+        ->assertSee('Back to games');
+    $this->actingAs($user)->get(route('games.create'))
+        ->assertOk()
+        ->assertSee('Back to games');
+    $this->actingAs($user)->get(route('games.edit', $game))
+        ->assertOk()
+        ->assertSee('Back to games');
 });

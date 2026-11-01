@@ -13,24 +13,31 @@ class GameController extends Controller
 {
     public function index(Request $request): View
     {
+        return view('games', [
+            'games' => $this->filteredGames($request),
+            'genres' => Genre::query()->orderBy('name')->get(),
+        ]);
+    }
+
+    private function filteredGames(Request $request)
+    {
         $query = Game::query()->with(['developer', 'genres']);
 
         if ($request->filled('search')) {
             $search = $request->string('search')->toString();
             $query->where(function ($query) use ($search): void {
                 $query->where('name', 'like', "%{$search}%")
-                    ->orWhereHas('developer', fn ($developer) => $developer->where('name', 'like', "%{$search}%"));
+                    ->orWhereHas('developer', fn ($developer) => $developer->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('genres', fn ($genres) => $genres->where('name', 'like', "%{$search}%"));
             });
         }
 
-        if ($request->filled('genre')) {
-            $query->whereHas('genres', fn ($genres) => $genres->whereKey($request->integer('genre')));
+        $selectedGenres = $request->input('genres', []);
+        if (is_array($selectedGenres) && count($selectedGenres) > 0) {
+            $query->whereHas('genres', fn ($genres) => $genres->whereIn('genres.id', $selectedGenres));
         }
 
-        return view('games', [
-            'games' => $query->latest('updated_at')->paginate(12)->withQueryString(),
-            'genres' => Genre::query()->orderBy('name')->get(),
-        ]);
+        return $query->latest('updated_at')->paginate(12)->withQueryString();
     }
 
     public function show(Game $game): View
@@ -40,14 +47,20 @@ class GameController extends Controller
         return view('game', compact('game'));
     }
 
-    public function create(): View
+    public function create(Request $request): View|RedirectResponse
     {
+        if (! $this->canPost($request)) {
+            return redirect()->route('games.index')->with('post_warning', 'You need at least three comments before you can add a game.');
+        }
+
         return view('create', ['genres' => Genre::query()->orderBy('name')->get()]);
     }
 
     public function store(Request $request): RedirectResponse
     {
-        $this->ensureCanPost($request);
+        if (! $this->canPost($request)) {
+            return redirect()->route('games.index')->with('post_warning', 'You need at least three comments before you can add a game.');
+        }
         $validated = $this->validateGame($request);
         $game = $this->persistGame($request, $validated);
 
@@ -142,9 +155,9 @@ class GameController extends Controller
             : $fallback;
     }
 
-    private function ensureCanPost(Request $request): void
+    private function canPost(Request $request): bool
     {
-        abort_unless($request->user()->is_admin || $request->user()->comments()->count() >= 3, 403, 'You need three comments before posting a game.');
+        return (bool) ($request->user()?->is_admin || $request->user()?->comments()->count() >= 3);
     }
 
     private function authorizeGame(Request $request, Game $game): void

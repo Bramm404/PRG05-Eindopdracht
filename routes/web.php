@@ -3,11 +3,14 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Game;
 use Illuminate\Support\Facades\Route;
 
 // Welcome Page
 Route::get('/', function () {
-    return view('welcome');
+    return view('welcome', [
+        'latestGame' => Game::with('developer')->latest('updated_at')->first(),
+    ]);
 });
 
 // Dashboard

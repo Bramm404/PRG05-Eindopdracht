@@ -1,10 +1,14 @@
-<x-layout title="Add a game">
+<x-layout title="Game toevoegen">
     <div class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-        <h1 class="mb-6 text-3xl font-bold text-slate-900">Add a game</h1>
-        <p class="mb-6 rounded-lg bg-indigo-50 p-4 text-indigo-800">You need at least three comments before you can post. Admins can post immediately.</p>
-        <form method="POST" action="{{ route('games.store') }}" enctype="multipart/form-data" class="flex flex-col gap-5 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">@csrf
+        <a href="{{ route('games.index') }}"
+            class="mb-6 inline-block font-semibold text-indigo-600 hover:text-indigo-800">&larr; Back to games</a>
+        <h1 class="mb-6 text-3xl font-bold text-slate-900">Game toevoegen</h1>
+        <form method="POST" action="{{ route('games.store') }}" enctype="multipart/form-data"
+            class="flex flex-col gap-5 rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200">@csrf
             @include('games._form')
-            <button class="self-start rounded-lg bg-indigo-600 px-5 py-2 font-semibold text-white hover:bg-indigo-700">Publish game</button>
+            <button class="self-start rounded-lg bg-navy-500 px-5 py-2 font-semibold text-white hover:bg-navy-600">
+                Game plaatsen
+            </button>
         </form>
     </div>
 </x-layout>

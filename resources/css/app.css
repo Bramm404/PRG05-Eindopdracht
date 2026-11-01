@@ -4,25 +4,26 @@
 
 body {
     margin: 0;
+    background: #eae8fd;
 }
 
 @layer components {
     .site-navbar {
-        min-height: 4.5rem;
+        min-height: 4.75rem;
     }
 
     .navbar-link {
-        color: #475569;
+        color: #d5d1fa;
         transition: background-color 150ms ease, color 150ms ease;
     }
 
     .navbar-link:hover {
-        background-color: #f1f5f9;
-        color: #0f172a;
+        background-color: #13095d;
+        color: #ffffff;
     }
 
     .logo-slot,
     .profile-slot {
-        border: 1px solid #e2e8f0;
+        border: 1px solid #5945ed;
     }
 }
