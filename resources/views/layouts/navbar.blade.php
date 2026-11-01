@@ -11,11 +11,16 @@
     </div>
 
     <div class="flex shrink-0 flex-row items-center justify-center gap-1 sm:gap-3">
-        <x-link href="/dashboard" :active="request()->is('dashboard*')" class="navbar-link rounded-md px-3 py-2 text-sm font-medium">
-            Home
-        </x-link>
+        @auth
+            <x-link href="/dashboard" :active="request()->is('dashboard*')" class="navbar-link rounded-md px-3 py-2 text-sm font-medium">
+                Home
+            </x-link>
+        @endauth
         <x-link href="/games" :active="request()->is('games*')" class="navbar-link rounded-md px-3 py-2 text-sm font-medium">
             Games
+        </x-link>
+        <x-link :href="route('about')" :active="request()->is('about')" class="navbar-link rounded-md px-3 py-2 text-sm font-medium">
+            About
         </x-link>
     </div>
 

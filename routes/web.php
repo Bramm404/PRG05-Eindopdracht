@@ -13,6 +13,8 @@ Route::get('/', function () {
     ]);
 });
 
+Route::view('/about', 'about')->name('about');
+
 // Dashboard
 Route::get('/dashboard', function () {
     $user = auth()->user()->load(['favorites.developer', 'comments.game']);
